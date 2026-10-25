@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; img-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Google Maps API checker</title>
+<style>
+
+:root{color-scheme:light;--ink:#000011;--muted:#554b43;--accent:#660000;--ochre:#cc9900}
+*{box-sizing:border-box}
+body{margin:0;background:#d9d7ce;color:var(--ink);font:14px/1.45 "Times New Roman",Times,serif}
+main{max-width:960px;margin:28px auto;padding:14px 18px 24px;background:#fff;border:2px solid;border-color:#fff #77756e #77756e #fff;box-shadow:5px 5px 0 #aaa89e}
+.site-strip{background:var(--ochre);min-height:44px;padding:10px 12px;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px}
+header{text-align:center;padding:20px 0 17px;border-bottom:7px solid var(--ochre);box-shadow:0 1px 0 #b47c00;margin-bottom:18px;color:var(--accent)}
+header p{font-size:12px;margin-bottom:4px}h1{font-size:30px;font-weight:400;font-style:italic;line-height:1.15;margin:0}h2{font-size:17px;font-weight:700;margin:0;color:var(--accent)}p{margin:0}
+button,input,select{font:12px Arial,Helvetica,sans-serif;border-radius:0}
+button{min-height:28px;padding:4px 10px;border:1px solid #888;background:#efefef;color:#111;cursor:pointer;box-shadow:inset 1px 1px #fff,inset -1px -1px #ccc}
+button:hover:not(:disabled){background:#ffffcc}button:active:not(:disabled){box-shadow:inset 1px 1px #aaa}button:disabled{color:#777;cursor:not-allowed}
+:focus-visible{outline:2px solid #000066;outline-offset:3px}
+.field-label,legend{font-weight:700;color:var(--accent)}.field-label{display:block;margin-bottom:5px}.key-row{display:flex;gap:6px}
+input[type=password],input[type=text],select{background:#fff;color:#111;border:1px solid #999}
+input[type=password],input[type=text]{width:100%;min-width:0;padding:6px 7px;font:13px "Courier New",monospace}input:disabled{background:#f2f2f2;color:#666}
+input[type=checkbox]{width:14px;height:14px;margin:0;flex-shrink:0;accent-color:#cc9900}label{cursor:pointer}
+.hint,.summary{font-size:12px;color:var(--muted)}.hint{margin-top:6px}.hint:empty{display:none}code{font-size:11px;overflow-wrap:anywhere}
+fieldset{border:0;border-top:1px solid #cdbb89;padding:10px 0 0;margin:20px 0 0;min-width:0}legend{padding:0 8px 0 0;font-size:16px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.small-buttons{display:flex;gap:6px;flex-wrap:wrap}.small-buttons button{font-size:11px;min-height:26px;padding:3px 8px}
+.services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px;gap:0 18px}.service{display:flex;align-items:center;gap:8px;min-height:32px;padding:5px 3px;border-bottom:1px dotted #ddd}.service:hover{background:#ffffcc}.service-name{font-size:13px;color:#000066}
+.billing-note{font-size:12px;color:var(--muted);margin:16px 0 10px}.actions{display:flex;flex-wrap:wrap;gap:8px}.primary{font-weight:700}
+.run-status{margin-top:14px;font-size:12px;color:#006633}progress{display:block;width:100%;height:7px;margin-top:5px;accent-color:#cc9900}
+.results-section{margin-top:24px}.results-header{background:#ffffcc;padding:5px 7px;margin-bottom:10px;border-top:1px solid #d5bf79;border-bottom:1px solid #d5bf79}.summary{font-variant-numeric:tabular-nums}select{min-height:28px;padding:3px 6px}
+#results{margin-top:8px;min-height:60px}.empty{padding:17px 0;color:var(--muted);font-size:13px;font-style:italic}.result{border-bottom:1px dotted #bbb;padding:10px 2px;overflow-wrap:anywhere}.result h3{font-size:14px;font-weight:400;color:#000066;margin:0}.result p{font-size:13px;margin-top:7px}
+.badge{font:12px "Courier New",monospace;color:#444}.badge::before{content:"[ "}.badge::after{content:" ]"}.badge.available{color:#006000}.badge.disabled,.badge.invalid_key{color:#a00000}.badge.restricted,.badge.billing,.badge.quota{color:#805000}.badge.network_error,.badge.inconclusive{color:#000080}
+.meta{font:11px/1.5 "Courier New",monospace;color:var(--muted);margin-top:6px}details{font-size:12px;color:var(--muted);margin-top:6px}summary{cursor:pointer;color:#0000ee;text-decoration:underline}summary:hover{color:#800080}.error{color:#a00000!important}.scope{font-size:12px;color:var(--accent);margin-top:23px;padding-top:10px;border-top:6px solid var(--ochre)}
+.identity-mode{margin-top:14px;display:flex;align-items:center;gap:10px}.android-fields .field-label{margin-top:10px}
+[hidden]{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:1000px){main{margin:20px}}
+@media(max-width:650px){main{margin:10px;padding:10px 12px 20px;box-shadow:3px 3px 0 #aaa89e}header{padding:17px 0}h1{font-size:26px}}
+@media(max-width:400px){.services{grid-template-columns:1fr}.site-strip{font-size:11px}.results-header{align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<main>
+<header><h1>Google Maps API checker</h1></header>
+<form id="check-form" autocomplete="off">
+<label class="field-label" for="api-key">API key</label>
+<div class="key-row">
+<input id="api-key" type="password" placeholder="Paste API key" autocomplete="off" spellcheck="false" autocapitalize="none" required>
+<button id="toggle-key" type="button" aria-controls="api-key" aria-pressed="false">Show</button>
+</div>
+<div class="identity-mode"><label for="key-mode">Key type</label><select id="key-mode"><option value="server">Server / unrestricted</option><option value="android_rest">Android (REST test)</option></select></div>
+<fieldset id="android-fields" class="android-fields" hidden disabled>
+<legend>Android identity</legend>
+<label class="field-label" for="android-package">Package name</label>
+<input id="android-package" type="text" placeholder="com.example.app" maxlength="255" spellcheck="false" autocapitalize="none" required>
+<label class="field-label" for="android-sha1">Signing certificate SHA-1</label>
+<input id="android-sha1" type="text" placeholder="40 hex characters, with or without colons" maxlength="80" spellcheck="false" autocapitalize="none" required>
+</fieldset>
+<fieldset id="service-fields">
+<legend>Services</legend>
+<div class="toolbar">
+<span id="selection-count" class="hint">0 selected</span>
+<div class="small-buttons"><button id="select-all" type="button" disabled>Select all</button><button id="clear-selection" type="button" disabled>Clear</button></div>
+</div>
+<div id="services" class="services"></div>
+</fieldset>
+<p id="load-status" class="hint" role="status">Loading services…</p>
+<button id="retry" type="button" hidden>Retry</button>
+<p class="billing-note">Google may charge for these requests.</p>
+<div class="actions"><button id="check" class="primary" type="submit" disabled>Check services</button><button id="stop" type="button" disabled>Stop after current</button></div>
+</form>
+<div class="run-status"><div id="run-status" role="status" aria-live="polite" aria-atomic="true">Ready</div><progress id="progress" value="0" max="1" aria-label="Service checks completed"></progress></div>
+<section class="results-section" aria-labelledby="results-heading">
+<div class="toolbar results-header"><h2 id="results-heading">REST results</h2><div class="small-buttons"><button id="download" disabled>Export JSON</button><button id="clear-data">Clear results &amp; key</button></div></div>
+<div class="toolbar"><p id="summary" class="summary" role="status"></p><div><label for="filter" class="sr-only">Filter results by status</label><select id="filter"><option value="all">All statuses</option></select></div></div>
+<div id="results"></div>
+</section>
+<p class="scope"></p>
+<noscript><p class="error">Enable JavaScript to run checks.</p></noscript>
+</main>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const labels = {available:'Available',disabled:'Disabled',restricted:'Restricted',invalid_key:'Invalid key',billing:'Billing',quota:'Quota',inconclusive:'Inconclusive',network_error:'Network error'};
+const explanations = {
+ available:'This selected REST test succeeded from this server. Other operations or environments may still fail.',
+ disabled:'The backend reports an explicit Google response that this service is disabled.',
+ restricted:'The request was restricted. Check application and API restrictions in Google Cloud; Android header support varies by endpoint. Verify SDK keys in their intended app.',
+ invalid_key:'The key was reported invalid. Verify the key and its project in Google Cloud.',
+ billing:'Review the project’s billing account and the service’s billing requirements.',
+ quota:'Review service quotas and usage limits. Do not retry automatically.',
+ inconclusive:'The response does not establish whether this service is usable or disabled.',
+ network_error:'A connection or server failure prevented a reliable result. The request may still have reached Google and incurred charges.'
+};
+let services = [], results = [], running = false, loading = false, stopRequested = false, planned = 0, completed = 0, startedAt = null, runState = 'idle', runMode = 'server';
+for (const [value, label] of Object.entries(labels)) { const option = document.createElement('option'); option.value = value; option.textContent = label; $('filter').append(option); }
+function selected() { return [...$('services').querySelectorAll('input:checked')].map(input => input.value); }
+function updateControls() {
+ const busy = running;
+ const count = selected().length;
+ const androidMode = $('key-mode').value === 'android_rest';
+ $('key-mode').disabled = busy;
+ $('android-fields').hidden = !androidMode;
+ $('android-fields').disabled = busy || !androidMode;
+ $('selection-count').textContent = count + ' selected';
+ $('service-fields').disabled = busy || loading;
+ $('select-all').disabled = busy || loading || !services.length;
+ $('clear-selection').disabled = busy || loading || !count;
+ $('api-key').disabled = busy; $('toggle-key').disabled = busy;
+ $('check').disabled = busy || loading || !count || !$('api-key').value.trim();
+ $('stop').disabled = !running || stopRequested;
+ $('clear-data').disabled = busy; $('download').disabled = busy || !results.length;
+ $('retry').disabled = busy || loading;
+}
+async function loadServices() {
+ loading = true; $('retry').hidden = true; $('load-status').classList.remove('error'); $('load-status').textContent = 'Loading services…'; updateControls();
+ try {
+  const response = await fetch('/api/services', {cache:'no-store',redirect:'error'});
+  if (!response.ok) throw new Error();
+  const data = await response.json();
+  if (!Array.isArray(data.services) || !data.services.every(s => s && typeof s.id === 'string' && s.id.length && typeof s.name === 'string' && typeof s.description === 'string') || new Set(data.services.map(s => s.id)).size !== data.services.length) throw new Error();
+  services = data.services; $('services').replaceChildren();
+  for (const service of services) {
+   const label = document.createElement('label'); label.className = 'service';
+   const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.value = service.id;
+   const text = document.createElement('span'); const name = document.createElement('span'); name.className = 'service-name'; name.textContent = service.name;
+   label.title = service.description;
+   text.append(name); label.append(checkbox,text); $('services').append(label);
+  }
+  $('load-status').textContent = services.length ? '' : 'No services returned.';
+ } catch {
+  $('load-status').textContent = 'Could not load services. Check that the local server is running.';
+  $('load-status').classList.add('error'); $('retry').hidden = false;
+ } finally { loading = false; updateControls(); }
+}
+function redact(value, key) {
+ let text = String(value ?? '');
+ if (key) for (const secret of new Set([key,encodeURIComponent(key)])) text = text.split(secret).join('[REDACTED]');
+ return text.replace(/AIza[0-9A-Za-z_-]{20,}/g, '[REDACTED]');
+}
+function renderResults() {
+ const counts = {};
+ for (const result of results) counts[result.status] = (counts[result.status] || 0) + 1;
+ $('summary').textContent = results.length ? (runMode === 'android_rest' ? 'Android REST · ' : 'Server · ') + completed + ' of ' + planned + ' checked · ' + Object.entries(counts).map(([status,count]) => count + ' ' + labels[status].toLowerCase()).join(' · ') : '';
+ const visible = results.filter(r => $('filter').value === 'all' || r.status === $('filter').value);
+ $('results').replaceChildren();
+ if (!visible.length) {
+  const empty = document.createElement('div'); empty.className = 'empty'; empty.textContent = results.length ? 'No results match this status.' : running ? 'Waiting for the first response…' : 'Select services to check.'; $('results').append(empty);
+ }
+ for (const result of visible) {
+  const article = document.createElement('article'); article.className = 'result';
+  const top = document.createElement('div'); top.className = 'toolbar';
+  const title = document.createElement('h3'); title.textContent = result.name;
+  const badge = document.createElement('span'); badge.className = 'badge ' + result.status; badge.textContent = labels[result.status]; top.append(title,badge);
+  const message = document.createElement('p'); message.textContent = result.message || 'No additional message returned.';
+  const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = 'HTTP ' + (result.http_status ?? '—') + ' / ' + (result.elapsed_ms === null ? 'Timing unavailable' : result.elapsed_ms + ' ms') + ' / ' + result.id;
+  const details = document.createElement('details'); const summary = document.createElement('summary'); summary.textContent = 'Details'; const explanation = document.createElement('p'); explanation.textContent = explanations[result.status]; details.append(summary,message,meta,explanation);
+  article.append(top,details); $('results').append(article);
+ }
+}
+$('check-form').addEventListener('submit', async event => {
+ event.preventDefault(); if ($('check').disabled || running) return;
+ const androidMode = $('key-mode').value === 'android_rest';
+ let android = null;
+ if (androidMode) {
+  const packageName = $('android-package').value.trim();
+  const sha1 = $('android-sha1').value.trim();
+  $('android-package').setCustomValidity(/^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(packageName) ? '' : 'Enter a package name such as com.example.app.');
+  $('android-sha1').setCustomValidity(/^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{2}(?::[0-9a-fA-F]{2}){19})$/.test(sha1) ? '' : 'Enter a 40-character SHA-1, with optional colons between bytes.');
+  if (!$('check-form').reportValidity()) return;
+  android = {package_name:packageName,sha1:sha1.replaceAll(':','').toUpperCase()};
+ }
+ runMode = androidMode ? 'android_rest' : 'server';
+ let key = $('api-key').value.trim();
+ const queue = services.filter(service => selected().includes(service.id));
+ running = true; stopRequested = false; results = []; planned = queue.length; completed = 0; startedAt = new Date().toISOString(); runState = 'running';
+ $('api-key').type = 'password'; $('toggle-key').textContent = 'Show'; $('toggle-key').setAttribute('aria-pressed','false');
+ $('filter').value = 'all'; $('progress').max = planned; $('progress').value = 0; updateControls(); renderResults();
+ try {
+  for (const service of queue) {
+   if (stopRequested) break;
+   $('run-status').textContent = 'Checking ' + redact(service.name,key) + ' · ' + (completed + 1) + ' of ' + planned + '…';
+   const start = performance.now(); let result;
+   try {
+    const response = await fetch('/api/check', {method:'POST',headers:{'Content-Type':'application/json','X-Local-Request':'1'},body:JSON.stringify({key,services:[service.id],android}),cache:'no-store',redirect:'error'});
+    if (!response.ok) {
+     result = {status:'network_error',message:'Local server returned HTTP ' + response.status + '. Google’s outcome is unknown. The run has stopped to avoid further requests.',http_status:null,elapsed_ms:Math.round(performance.now()-start)};
+     try {
+      const error = await response.json();
+      if (typeof error.error === 'string') result.message = redact(error.error,key) + ' Run stopped.';
+     } catch {}
+     stopRequested = true;
+    } else {
+     const data = await response.json();
+     if (!Array.isArray(data.results) || data.results.length !== 1 || data.results[0]?.id !== service.id) throw new Error('response');
+     const raw = data.results[0]; const known = Object.hasOwn(labels,raw.status);
+     result = {status:known ? raw.status : 'inconclusive',message:known ? (typeof raw.message === 'string' ? redact(raw.message,key) : 'No message returned.') : 'The server returned an unrecognized status; no availability conclusion can be drawn.',http_status:Number.isInteger(raw.http_status) && raw.http_status >= 100 && raw.http_status <= 599 ? raw.http_status : null,elapsed_ms:typeof raw.elapsed_ms === 'number' && Number.isFinite(raw.elapsed_ms) && raw.elapsed_ms >= 0 ? raw.elapsed_ms : null};
+    }
+   } catch {
+    result = {status:'network_error',message:'The request failed or the server response could not be read. It may already have incurred charges. The run has stopped; no automatic retry was made.',http_status:null,elapsed_ms:Math.round(performance.now()-start)};
+    stopRequested = true;
+   }
+   results.push({mode:runMode,id:redact(service.id,key),name:redact(service.name,key),...result}); completed++; $('progress').value = completed; renderResults();
+  }
+ } finally {
+  key = ''; running = false; runState = stopRequested ? 'stopped' : 'completed';
+  $('run-status').textContent = (stopRequested ? 'Stopped. ' : 'Complete. ') + completed + ' of ' + planned + ' checked.';
+  updateControls();
+ }
+});
+$('stop').addEventListener('click', () => { stopRequested = true; $('run-status').textContent = 'Stopping after current request…'; updateControls(); });
+$('toggle-key').addEventListener('click', () => { const show = $('api-key').type === 'password'; $('api-key').type = show ? 'text' : 'password'; $('toggle-key').textContent = show ? 'Hide' : 'Show'; $('toggle-key').setAttribute('aria-pressed',String(show)); });
+$('key-mode').addEventListener('change',updateControls);
+for (const id of ['android-package','android-sha1']) $(id).addEventListener('input', () => $(id).setCustomValidity(''));
+$('api-key').addEventListener('input',updateControls); $('services').addEventListener('change',updateControls);
+$('select-all').addEventListener('click', () => { $('services').querySelectorAll('input').forEach(input => input.checked = true); updateControls(); });
+$('clear-selection').addEventListener('click', () => { $('services').querySelectorAll('input').forEach(input => input.checked = false); updateControls(); });
+$('filter').addEventListener('change',renderResults); $('retry').addEventListener('click',loadServices);
+$('clear-data').addEventListener('click', () => {
+ if (running) return;
+ $('api-key').value = ''; $('api-key').type = 'password'; $('toggle-key').textContent = 'Show'; $('toggle-key').setAttribute('aria-pressed','false');
+ $('android-package').value = ''; $('android-sha1').value = ''; $('key-mode').value = 'server';
+ for (const id of ['android-package','android-sha1']) $(id).setCustomValidity('');
+ runMode = 'server'; results = []; planned = completed = 0; startedAt = null; runState = 'idle'; $('filter').value = 'all'; $('progress').value = 0;
+ $('run-status').textContent = 'Results and key cleared.'; renderResults(); updateControls(); $('api-key').focus();
+});
+$('download').addEventListener('click', () => {
+ if (running || !results.length) return;
+ const report = {mode:runMode,scope:"REST diagnostics only; no SDK or Android restriction enforcement verification",started_at:startedAt,exported_at:new Date().toISOString(),state:runState,planned,completed,results};
+ const blob = new Blob([redact(JSON.stringify(report,null,2),$('api-key').value.trim())],{type:'application/json'});
+ const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = 'maps-api-results.json'; link.click(); setTimeout(() => URL.revokeObjectURL(url),1000);
+});
+window.addEventListener('beforeunload', event => { if (running) { event.preventDefault(); event.returnValue = ''; } });
+loadServices();
+</script>
+</body>
+</html>
